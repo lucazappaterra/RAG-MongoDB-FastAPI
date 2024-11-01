@@ -1,0 +1,17 @@
+# C:\Users\lzappate\AppData\Local\Microsoft\WindowsApps\python3.10.exe -m venv .venv
+# pip install -r requirements.txt
+pymongo
+langchain
+langchain-community
+pypdf
+langchain-ollama
+openai
+tiktoken
+sentence-transformers
+faiss-cpu
+numpy
+pandas
+openpyxl
+langchain-openai
+fastapi
+uvicorn

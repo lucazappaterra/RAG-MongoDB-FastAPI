@@ -15,21 +15,34 @@ from langchain_core.prompts import ChatPromptTemplate
 
 
 class ChatbotWithHistory:
-    def __init__(self, user_id: str, conversation_id: str, retriever, model_openapi_url="https://047c-195-230-200-203.ngrok-free.app/v1"):
-        self.user_id = user_id
-        self.conversation_id = conversation_id
+    def __init__(self, user_id: str = None, conversation_id: str = None, retriever = None, model_openapi_url="https://047c-195-230-200-203.ngrok-free.app/v1"):
+        self.user_id = user_id if user_id is not None else None
+        self.conversation_id = conversation_id if conversation_id is not None else None
         self.model = ChatOpenAI(
             openai_api_base="https://7af2-195-230-200-203.ngrok-free.app/v1",
             api_key="EMPTY",
             temperature=0
         )
-        self.template = create_template()
+        self.template = create_template(self.user_id)
         self.prompt = ChatPromptTemplate.from_template(self.template)
 
         self.history = {}
-        self.chain_with_history = self.create_chain_with_history(retriever)
+        self.retriever = retriever if retriever is not None else None
+        self.chain_with_history = self.create_chain_with_history(self.retriever) if self.retriever is not None else None
+
+    def _set_retriever(self, retriever):
+        self.retriever = retriever
+
+    def _set_user_id(self, user_id):
+        self.user_id = user_id
+    
+    def _set_conversation_id(self, conversation_id): 
+        self.conversation_id = conversation_id
 
     def create_chain(self, retriever):
+        if self.retriever is None:
+            self._set_retriever(retriever)
+
         chain = (
             RunnableParallel({
                             "context": itemgetter("question") | retriever | format_docs,
@@ -49,7 +62,7 @@ class ChatbotWithHistory:
     def create_chain_with_history(self, retriever):
         chain = self.create_chain(retriever)
         
-        chain_with_history = RunnableWithMessageHistory(
+        self.chain_with_history = RunnableWithMessageHistory(
             chain,
             get_session_history=self.get_session_history,
             input_messages_key="question",
@@ -73,7 +86,6 @@ class ChatbotWithHistory:
                 ),
             ],
         )
-        return chain_with_history
 
     def get_session_history(self, user_id: str, conversation_id: str) -> BaseChatMessageHistory:
         if (user_id, conversation_id) not in self.history:
@@ -81,6 +93,7 @@ class ChatbotWithHistory:
         return self.history[(user_id, conversation_id)]
 
     def ask_question(self, question: str):
+
         response = self.chain_with_history.invoke(
             {"question": question},
             config={"configurable": {"user_id": self.user_id, "conversation_id": self.conversation_id}}
@@ -88,3 +101,4 @@ class ChatbotWithHistory:
         print(response.get("output").content)
         print("\n")
         return response
+

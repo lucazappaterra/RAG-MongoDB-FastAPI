@@ -2,7 +2,6 @@ import uvicorn
 from fastapi import FastAPI
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 
-
 from src.app import app
 
 # mainApp = FastAPI()

@@ -11,6 +11,7 @@ app = FastAPI()
 # creare vector store
 app.vector_store = None
 app.db_handler = handlers.MongoHandler() 
+app.chatbot = ChatbotWithHistory()
 
 print("Loading embedding model...")
 try:
@@ -24,6 +25,10 @@ except Exception as e:
 
 # riempire nell'ingestion
 # richiamare nell'ask
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello World"}
 
 @app.get("/list_{db_name}")
 async def get_collections(db_name: str) -> List[str]:
@@ -49,9 +54,8 @@ async def insert_pdf(): # incorporare il nome del db e della collection come par
         if len(retrieved_docs) == len(dicts_after_split):
             print("Files already exists in the db, skipping ingestion")
         else:
-            print("Update function not implemented yet")
+            print("Update function not implemented yet")# probabilmente la creazione del db andrebbe fatta separatamente
 
-    retrieved_docs = app.db_handler.retrieve_documents_from_main_collection() # probabilmente la creazione del db andrebbe fatta separatamente
     app.vector_store = handlers.VectorStoreHandler(embeddings_model=app.embeddings_model, documents=retrieved_docs)
     return f"All files are loaded in '{db_name}' database and the vector store is now ready to be queried"
 
@@ -71,6 +75,6 @@ async def ask_question(question: str):
         raise ValueError("Vector store is not ready yet. Please load the documents first")
     else:
         retriever = app.vector_store.as_retriever()
-        chatbot = ChatbotWithHistory(user_id="zappa", conversation_id="dev", retriever=retriever)
-        answer = chatbot.ask_question(question)
+        app.chatbot.create_chain_with_history(retriever) 
+        answer = app.chatbot.ask_question(question)
     return answer

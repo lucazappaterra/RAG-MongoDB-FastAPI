@@ -1,9 +1,10 @@
 from pymongo import MongoClient
 from langchain_core.documents.base import Document
 from src.model.singleton.singleton import Singleton
+from configs.config import MONGO_HOST, MONGO_PORT
 
 class MongoHandler(MongoClient, metaclass=Singleton):
-    def __init__(self, host='localhost', port=27017):
+    def __init__(self, host=MONGO_HOST, port=MONGO_PORT):
         super().__init__(host, port)
         self.dbs = {self[key] for key in self.list_database_names()}
         self._main_db = None

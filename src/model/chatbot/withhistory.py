@@ -12,6 +12,7 @@ from langchain_core.runnables import (
 from src.model.chatbot.memoryhistory import InMemoryHistory
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
+from configs.config import MODEL_API_BASE
 
 
 class ChatbotWithHistory:
@@ -19,7 +20,7 @@ class ChatbotWithHistory:
         self.user_id = user_id if user_id is not None else None
         self.conversation_id = conversation_id if conversation_id is not None else None
         self.model = ChatOpenAI(
-            openai_api_base="https://7af2-195-230-200-203.ngrok-free.app/v1",
+            openai_api_base=MODEL_API_BASE,
             api_key="EMPTY",
             temperature=0
         )

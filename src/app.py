@@ -5,7 +5,10 @@ from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 
 from src.model import handlers
 from src.model.chatbot.withhistory import ChatbotWithHistory
-import os
+import uuid
+
+USER_ID = uuid.uuid4()
+CONVERSATION_ID = uuid.uuid4()
 
 app = FastAPI()
 # creare vector store

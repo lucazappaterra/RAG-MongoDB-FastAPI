@@ -1,6 +1,6 @@
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from model.singleton.singleton import Singleton
+from src.model.singleton.singleton import Singleton
 
 class PDFHandler(metaclass=Singleton):
     def __init__(self, directory, chunk_size=2000, chunk_overlap=200, verbose=False):

@@ -1,5 +1,6 @@
 from langchain_community.vectorstores import FAISS
-from model.singleton.singleton import Singleton
+from src.model.singleton.singleton import Singleton
+
 class VectorStoreHandler(metaclass=Singleton):
     def __init__(self, embeddings_model, documents=None):
         self.embeddings_model = embeddings_model

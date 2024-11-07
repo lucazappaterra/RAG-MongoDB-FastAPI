@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from langchain_core.documents.base import Document
-from model.singleton.singleton import Singleton
+from src.model.singleton.singleton import Singleton
 
 class MongoHandler(MongoClient, metaclass=Singleton):
     def __init__(self, host='localhost', port=27017):

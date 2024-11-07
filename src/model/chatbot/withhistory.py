@@ -1,5 +1,5 @@
-from utils.format_docs import format_docs
-from template.template import create_template
+from src.utils.format_docs import format_docs
+from src.template.template import create_template
 from langchain_core.runnables.base import RunnableParallel
 from operator import itemgetter
 from langchain_core.runnables.history import RunnableWithMessageHistory
@@ -9,7 +9,7 @@ from langchain_core.runnables import (
     ConfigurableFieldSpec,
     # RunnablePassthrough,
 )
-from model.chatbot.memoryhistory import InMemoryHistory
+from src.model.chatbot.memoryhistory import InMemoryHistory
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -19,7 +19,7 @@ class ChatbotWithHistory:
         self.user_id = user_id
         self.conversation_id = conversation_id
         self.model = ChatOpenAI(
-            openai_api_base="https://047c-195-230-200-203.ngrok-free.app/v1",
+            openai_api_base="https://7af2-195-230-200-203.ngrok-free.app/v1",
             api_key="EMPTY",
             temperature=0
         )

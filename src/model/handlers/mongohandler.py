@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from langchain_core.documents.base import Document
 from src.model.singleton.singleton import Singleton
-from configs.config import MONGO_HOST, MONGO_PORT
+from src.utils.config_setup import MONGO_HOST, MONGO_PORT, HISTORY_DB, HISTORY_COLLECTION
 
 class MongoHandler(MongoClient, metaclass=Singleton):
     def __init__(self, host=MONGO_HOST, port=MONGO_PORT):
@@ -54,6 +54,7 @@ class MongoHandler(MongoClient, metaclass=Singleton):
             return retrieved_docs
         else:
             raise ValueError(f"Main collection undefined, set it first")
+
         # retrieved_docs = []
         # for chunk in collection.find():
         #     doc = Document(page_content=chunk.get("page_content"), 
@@ -62,3 +63,9 @@ class MongoHandler(MongoClient, metaclass=Singleton):
         #             id=chunk.get("_id"))
         #     retrieved_docs.append(doc)
         # return retrieved_docs
+
+    def save_conversation_history(self, history):
+        history_db = self[HISTORY_DB]
+        history_collection = history_db[HISTORY_COLLECTION]
+        history_collection.insert_one(history)
+        print(f"Conversation history saved in database '{HISTORY_DB}', collection '{HISTORY_COLLECTION}'")

@@ -12,7 +12,7 @@ from langchain_core.runnables import (
 from src.model.chatbot.memoryhistory import InMemoryHistory
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-from configs.config import MODEL_API_BASE
+from src.utils.config_setup import MODEL_API_BASE
 
 
 class ChatbotWithHistory:
@@ -92,6 +92,9 @@ class ChatbotWithHistory:
         if (user_id, conversation_id) not in self.history:
             self.history[(user_id, conversation_id)] = InMemoryHistory()
         return self.history[(user_id, conversation_id)]
+    
+    def empty_history(self):
+        self.history = {}
 
     def ask_question(self, question: str):
 

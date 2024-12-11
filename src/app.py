@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
@@ -15,10 +16,25 @@ class QuestionPayload(BaseModel):
     conversation_id: str = None
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # creare vector store
 app.vector_store = None
 app.db_handler = handlers.MongoHandler() 
 app.chatbot = ChatbotWithHistory()
+
+
 
 print("Loading embedding model...")
 try:
@@ -92,6 +108,7 @@ async def ask_question(payload: QuestionPayload) -> Dict:
         raise ValueError("Vector store is not ready yet. Please load the documents first")
     else:
         if payload.conversation_id is None:
+            app.chatbot.empty_history()
             payload.conversation_id = str(uuid.uuid4())
             logger.info(f"Generated new conversation ID: {payload.conversation_id}")
 

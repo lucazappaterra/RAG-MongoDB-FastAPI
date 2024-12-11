@@ -13,5 +13,5 @@ numpy
 pandas
 openpyxl
 langchain-openai
-fastapi
+fastapi[standard]
 uvicorn
